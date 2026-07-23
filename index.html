@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>PCT em Rede — Canal CASPCT/SES-PE</title>
+<meta name="description" content="PCT em Rede: canal de comunicação, escuta e articulação da Coordenação de Atenção à Saúde de Povos e Comunidades Tradicionais (CASPCT/SES-PE)." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<div class="page">
+  <div class="chat-widget" role="region" aria-label="Chatbot PCT em Rede">
+
+    <header class="chat-header">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">◉</span>
+        <div class="brand-text">
+          <h1>PCT em Rede</h1>
+          <p class="tagline">Conectando territórios, escutas e políticas de cuidado.</p>
+        </div>
+      </div>
+
+      <div class="a11y-controls" role="group" aria-label="Opções de acessibilidade">
+        <button type="button" id="font-decrease" aria-label="Diminuir tamanho da fonte" title="Diminuir fonte">A−</button>
+        <button type="button" id="font-increase" aria-label="Aumentar tamanho da fonte" title="Aumentar fonte">A+</button>
+        <button type="button" id="contrast-toggle" aria-label="Alternar alto contraste" title="Alto contraste">◐</button>
+      </div>
+    </header>
+
+    <div class="thread-strip" aria-hidden="true"></div>
+
+    <main id="chat-log" class="chat-log" aria-live="polite" aria-atomic="false"></main>
+
+    <div id="quick-replies" class="quick-replies" role="group" aria-label="Opções de resposta rápida"></div>
+
+    <form id="chat-form" class="chat-input-form" autocomplete="off">
+      <label for="chat-input" class="sr-only">Digite sua mensagem (Enter envia, Shift+Enter quebra linha)</label>
+      <textarea id="chat-input" rows="1" placeholder="Digite sua mensagem ou o número da opção..."></textarea>
+      <button type="submit" aria-label="Enviar mensagem" id="send-btn">Enviar</button>
+    </form>
+
+    <p class="disclaimer">
+      Este é um protótipo de demonstração do PCT em Rede. Nenhuma informação é enviada a servidores externos —
+      os registros ficam salvos apenas neste navegador.
+    </p>
+  </div>
+</div>
+
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/chatbot.js"></script>
+</body>
+</html>

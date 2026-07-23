@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cadastro de Povos e Comunidades Tradicionais — CASPCT/SES-PE</title>
+<meta name="description" content="Cadastro de Povos e Comunidades Tradicionais junto à CASPCT/SES-PE — PCT em Rede." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/form.css" />
+</head>
+<body class="form-page">
+
+<div class="form-shell">
+
+  <header class="form-header">
+    <span class="brand-icon" aria-hidden="true">⌂</span>
+    <div>
+      <p class="form-eyebrow">PCT em Rede · CASPCT/SES-PE</p>
+      <h1>Cadastro de Povos e Comunidades Tradicionais</h1>
+    </div>
+  </header>
+
+  <p class="form-intro">
+    Este cadastro permite que a Coordenação de Atenção à Saúde de Povos e Comunidades Tradicionais (CASPCT/SES-PE)
+    conheça a realidade do seu território, planeje ações com mais precisão e mantenha sua comunidade informada
+    sobre políticas, editais e atividades que afetam vocês.
+  </p>
+  <p class="form-intro">
+    O preenchimento leva cerca de <strong>8 minutos</strong>. Você não precisa ter todas as respostas — o que não
+    souber, pode deixar em branco ou marcar "não sei informar".
+  </p>
+  <p class="form-intro form-privacy">
+    <strong>Sobre seus dados:</strong> as informações são usadas exclusivamente pela CASPCT/SES-PE para fins de
+    planejamento e comunicação em saúde. Não são compartilhadas com terceiros nem usadas para fins comerciais,
+    conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018). Você pode solicitar acesso, correção ou exclusão
+    dos dados a qualquer momento.
+  </p>
+
+  <nav class="section-nav" aria-label="Navegar por seções">
+    <a href="#s1">1. Identificação</a>
+    <a href="#s2">2. Território</a>
+    <a href="#s3">3. População</a>
+    <a href="#s4">4. Saúde</a>
+    <a href="#s5">5. Condições</a>
+    <a href="#s6">6. Organização</a>
+    <a href="#s7">7. Contato</a>
+    <a href="#s8">8. Consentimento</a>
+  </nav>
+
+  <form id="cad-form" novalidate>
+
+    <!-- ============ SEÇÃO 1 ============ -->
+    <fieldset id="s1">
+      <legend>1. Identificação da comunidade</legend>
+
+      <div class="field">
+        <label for="q1_1">Nome da comunidade, povo ou grupo *</label>
+        <input id="q1_1" name="q1_1" type="text" required />
+        <p class="help">Ajuda: use o nome pelo qual a comunidade se reconhece.</p>
+      </div>
+
+      <div class="field">
+        <label for="q1_2">A comunidade é conhecida por outro nome?</label>
+        <input id="q1_2" name="q1_2" type="text" />
+      </div>
+
+      <fieldset class="field">
+        <legend>Segmento *</legend>
+        <div class="radio-grid" data-required="true" data-group="q1_3">
+          <label><input type="radio" name="q1_3" value="Comunidade quilombola" required> Comunidade quilombola</label>
+          <label><input type="radio" name="q1_3" value="Povo indígena"> Povo indígena</label>
+          <label><input type="radio" name="q1_3" value="Povo cigano"> Povo cigano</label>
+          <label><input type="radio" name="q1_3" value="Comunidade de terreiro / povo de matriz africana"> Comunidade de terreiro / povo de matriz africana</label>
+          <label><input type="radio" name="q1_3" value="Pescadores(as) artesanais"> Pescadores(as) artesanais</label>
+          <label><input type="radio" name="q1_3" value="Marisqueiras"> Marisqueiras</label>
+          <label><input type="radio" name="q1_3" value="Comunidade de fundo ou fecho de pasto"> Comunidade de fundo ou fecho de pasto</label>
+          <label><input type="radio" name="q1_3" value="Ribeirinhos(as)"> Ribeirinhos(as)</label>
+          <label><input type="radio" name="q1_3" value="Extrativistas"> Extrativistas</label>
+          <label><input type="radio" name="q1_3" value="Agricultores(as) familiares tradicionais"> Agricultores(as) familiares tradicionais</label>
+          <label><input type="radio" name="q1_3" value="Assentamento de reforma agrária"> Assentamento de reforma agrária</label>
+          <label><input type="radio" name="q1_3" value="Acampamento / comunidade em processo de regularização"> Acampamento / comunidade em processo de regularização</label>
+          <label><input type="radio" name="q1_3" value="População em situação de rua"> População em situação de rua</label>
+          <label class="with-input"><input type="radio" name="q1_3" value="Outro" data-other-for="q1_3_other"> Outro
+            <input type="text" id="q1_3_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="q1_4">Se marcou "Povo indígena", qual etnia?</label>
+        <input id="q1_4" name="q1_4" type="text" />
+      </div>
+
+      <fieldset class="field">
+        <legend>Se marcou "Comunidade de terreiro", qual tradição?</legend>
+        <div class="radio-grid">
+          <label><input type="radio" name="q1_5" value="Candomblé"> Candomblé</label>
+          <label><input type="radio" name="q1_5" value="Umbanda"> Umbanda</label>
+          <label><input type="radio" name="q1_5" value="Jurema / Catimbó"> Jurema / Catimbó</label>
+          <label><input type="radio" name="q1_5" value="Xangô"> Xangô</label>
+          <label><input type="radio" name="q1_5" value="Mais de uma tradição"> Mais de uma tradição</label>
+          <label class="with-input"><input type="radio" name="q1_5" value="Outra" data-other-for="q1_5_other"> Outra
+            <input type="text" id="q1_5_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A comunidade possui alguma certificação ou reconhecimento oficial? *</legend>
+        <div class="checkbox-grid" data-required-checkbox="q1_6">
+          <label><input type="checkbox" name="q1_6" value="Certificação da Fundação Cultural Palmares"> Certificação da Fundação Cultural Palmares</label>
+          <label><input type="checkbox" name="q1_6" value="Terra indígena demarcada"> Terra indígena demarcada</label>
+          <label><input type="checkbox" name="q1_6" value="Terra indígena em processo de demarcação"> Terra indígena em processo de demarcação</label>
+          <label><input type="checkbox" name="q1_6" value="Território titulado pelo INCRA"> Território titulado pelo INCRA</label>
+          <label><input type="checkbox" name="q1_6" value="Processo em andamento no INCRA"> Processo em andamento no INCRA</label>
+          <label><input type="checkbox" name="q1_6" value="Registro no CNPCT / cadastro estadual"> Registro no CNPCT / cadastro estadual</label>
+          <label><input type="checkbox" name="q1_6" value="Registro em cartório (associação)"> Registro em cartório (associação)</label>
+          <label><input type="checkbox" name="q1_6" value="Não possui certificação"> Não possui certificação</label>
+          <label><input type="checkbox" name="q1_6" value="Não sei informar"> Não sei informar</label>
+        </div>
+        <p class="error-text" data-error-for="q1_6">Selecione ao menos uma opção.</p>
+      </fieldset>
+
+      <div class="field">
+        <label for="q1_7">Ano aproximado de fundação ou de ocupação do território</label>
+        <input id="q1_7" name="q1_7" type="text" inputmode="numeric" placeholder="ex.: 1950" />
+      </div>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 2 ============ -->
+    <fieldset id="s2">
+      <legend>2. Localização e território</legend>
+
+      <div class="field">
+        <label for="q2_1">Município *</label>
+        <input id="q2_1" name="q2_1" type="text" list="municipios-pe" required />
+        <datalist id="municipios-pe"></datalist>
+        <p class="help">Sugestões de apoio para os municípios de Pernambuco — se não encontrar o nome, digite mesmo assim.</p>
+      </div>
+
+      <div class="field radio-inline">
+        <span class="pseudo-label">A comunidade está em mais de um município?</span>
+        <label><input type="radio" name="q2_2" value="Sim"> Sim</label>
+        <label><input type="radio" name="q2_2" value="Não"> Não</label>
+      </div>
+      <div class="field">
+        <label for="q2_2_quais">Se sim, quais?</label>
+        <input id="q2_2_quais" name="q2_2_quais" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="q2_3">Distrito, povoado ou referência de localização *</label>
+        <input id="q2_3" name="q2_3" type="text" required />
+        <p class="help">Ajuda: ex. "às margens do Rio Pajeú, 12 km da sede do município, sentido Serra Talhada".</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>Zona *</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q2_4" value="Urbana" required> Urbana</label>
+          <label><input type="radio" name="q2_4" value="Rural"> Rural</label>
+          <label><input type="radio" name="q2_4" value="Periurbana"> Periurbana</label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="q2_5">Ponto de referência para chegar à comunidade</label>
+        <textarea id="q2_5" name="q2_5" rows="3"></textarea>
+        <p class="help">Importante para visitas técnicas e equipes de saúde.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>Condições de acesso *</legend>
+        <div class="checkbox-grid" data-required-checkbox="q2_6">
+          <label><input type="checkbox" name="q2_6" value="Estrada asfaltada"> Estrada asfaltada</label>
+          <label><input type="checkbox" name="q2_6" value="Estrada de terra transitável o ano todo"> Estrada de terra transitável o ano todo</label>
+          <label><input type="checkbox" name="q2_6" value="Estrada de terra intransitável em período de chuva"> Estrada de terra intransitável em período de chuva</label>
+          <label><input type="checkbox" name="q2_6" value="Acesso apenas a pé"> Acesso apenas a pé</label>
+          <label><input type="checkbox" name="q2_6" value="Acesso por barco / travessia de rio"> Acesso por barco / travessia de rio</label>
+          <label class="with-input"><input type="checkbox" name="q2_6" value="Outro" data-other-for="q2_6_other"> Outro
+            <input type="text" id="q2_6_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+        <p class="error-text" data-error-for="q2_6">Selecione ao menos uma opção.</p>
+      </fieldset>
+
+      <div class="field">
+        <label for="q2_7">Distância aproximada até a sede do município</label>
+        <input id="q2_7" name="q2_7" type="text" placeholder="em quilômetros ou tempo de viagem" />
+      </div>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 3 ============ -->
+    <fieldset id="s3">
+      <legend>3. População</legend>
+
+      <div class="field">
+        <label for="q3_1">Número aproximado de famílias *</label>
+        <input id="q3_1" name="q3_1" type="text" inputmode="numeric" required />
+      </div>
+
+      <div class="field">
+        <label for="q3_2">Número aproximado de pessoas *</label>
+        <input id="q3_2" name="q3_2" type="text" inputmode="numeric" required />
+      </div>
+
+      <div class="field radio-inline">
+        <span class="pseudo-label">A comunidade tem estimativa por faixa etária?</span>
+        <label><input type="radio" name="q3_3" value="Sim"> Sim</label>
+        <label><input type="radio" name="q3_3" value="Não"> Não</label>
+      </div>
+      <div class="field">
+        <label for="q3_3_detalhe">Se sim, informe (crianças 0-11, adolescentes 12-17, adultos 18-59, pessoas idosas 60+)</label>
+        <textarea id="q3_3_detalhe" name="q3_3_detalhe" rows="2"></textarea>
+      </div>
+
+      <div class="field radio-inline">
+        <span class="pseudo-label">Há pessoas com deficiência na comunidade que precisam de atenção específica?</span>
+        <label><input type="radio" name="q3_4" value="Sim"> Sim</label>
+        <label><input type="radio" name="q3_4" value="Não"> Não</label>
+        <label><input type="radio" name="q3_4" value="Não sei informar"> Não sei informar</label>
+      </div>
+      <div class="field">
+        <label for="q3_4_quantas">Quantas, aproximadamente?</label>
+        <input id="q3_4_quantas" name="q3_4_quantas" type="text" />
+      </div>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 4 ============ -->
+    <fieldset id="s4">
+      <legend>4. Saúde no território</legend>
+
+      <fieldset class="field">
+        <legend>Qual serviço de saúde a comunidade usa com mais frequência? *</legend>
+        <div class="radio-grid" data-required="true">
+          <label><input type="radio" name="q4_1" value="UBS dentro da comunidade" required> Unidade Básica de Saúde dentro da comunidade</label>
+          <label><input type="radio" name="q4_1" value="UBS fora da comunidade"> Unidade Básica de Saúde fora da comunidade</label>
+          <label><input type="radio" name="q4_1" value="Posto de saúde indígena / Polo-base (SESAI)"> Posto de saúde indígena / Polo-base (SESAI)</label>
+          <label><input type="radio" name="q4_1" value="UPA"> Unidade de Pronto Atendimento (UPA)</label>
+          <label><input type="radio" name="q4_1" value="Hospital municipal"> Hospital municipal</label>
+          <label><input type="radio" name="q4_1" value="Hospital regional"> Hospital regional</label>
+          <label><input type="radio" name="q4_1" value="Não há serviço acessível"> Não há serviço acessível</label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="q4_2">Nome da unidade de saúde de referência</label>
+        <input id="q4_2" name="q4_2" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="q4_3">Distância até essa unidade</label>
+        <input id="q4_3" name="q4_3" type="text" />
+      </div>
+
+      <fieldset class="field">
+        <legend>A comunidade é coberta por equipe de Saúde da Família? *</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q4_4" value="Sim" required> Sim</label>
+          <label><input type="radio" name="q4_4" value="Não"> Não</label>
+          <label><input type="radio" name="q4_4" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A comunidade tem Agente Comunitário de Saúde? *</legend>
+        <div class="radio-grid" data-required="true">
+          <label><input type="radio" name="q4_5" value="Sim, morador(a)" required> Sim, e é morador(a) da comunidade</label>
+          <label><input type="radio" name="q4_5" value="Sim, não morador(a)"> Sim, mas não é morador(a)</label>
+          <label><input type="radio" name="q4_5" value="Não tem"> Não tem</label>
+          <label><input type="radio" name="q4_5" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A comunidade tem Agente Indígena de Saúde (AIS) ou Agente de Saneamento?</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q4_6" value="Sim"> Sim</label>
+          <label><input type="radio" name="q4_6" value="Não"> Não</label>
+          <label><input type="radio" name="q4_6" value="Não se aplica"> Não se aplica</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Principais problemas de saúde enfrentados pela comunidade * <span class="hint">(até 5)</span></legend>
+        <div class="checkbox-grid" data-required-checkbox="q4_7" data-max="5">
+          <label><input type="checkbox" name="q4_7" value="Hipertensão e diabetes"> Hipertensão e diabetes</label>
+          <label><input type="checkbox" name="q4_7" value="Doença falciforme"> Doença falciforme</label>
+          <label><input type="checkbox" name="q4_7" value="Saúde mental / uso de álcool e outras drogas"> Saúde mental / uso de álcool e outras drogas</label>
+          <label><input type="checkbox" name="q4_7" value="Saúde da mulher / pré-natal"> Saúde da mulher / pré-natal</label>
+          <label><input type="checkbox" name="q4_7" value="Saúde da criança"> Saúde da criança</label>
+          <label><input type="checkbox" name="q4_7" value="Doenças respiratórias"> Doenças respiratórias</label>
+          <label><input type="checkbox" name="q4_7" value="Verminoses e doenças de veiculação hídrica"> Verminoses e doenças de veiculação hídrica</label>
+          <label><input type="checkbox" name="q4_7" value="Tuberculose"> Tuberculose</label>
+          <label><input type="checkbox" name="q4_7" value="Hanseníase"> Hanseníase</label>
+          <label><input type="checkbox" name="q4_7" value="IST / HIV"> IST / HIV</label>
+          <label><input type="checkbox" name="q4_7" value="Insegurança alimentar e nutricional"> Insegurança alimentar e nutricional</label>
+          <label><input type="checkbox" name="q4_7" value="Agrotóxicos / contaminação ambiental"> Agrotóxicos / contaminação ambiental</label>
+          <label><input type="checkbox" name="q4_7" value="Violência"> Violência</label>
+          <label><input type="checkbox" name="q4_7" value="Racismo no atendimento em saúde"> Racismo no atendimento em saúde</label>
+          <label class="with-input"><input type="checkbox" name="q4_7" value="Outro" data-other-for="q4_7_other"> Outro
+            <input type="text" id="q4_7_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+        <p class="error-text" data-error-for="q4_7">Selecione ao menos uma opção (máximo 5).</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Principais dificuldades de acesso aos serviços *</legend>
+        <div class="checkbox-grid" data-required-checkbox="q4_8">
+          <label><input type="checkbox" name="q4_8" value="Transporte"> Transporte</label>
+          <label><input type="checkbox" name="q4_8" value="Distância"> Distância</label>
+          <label><input type="checkbox" name="q4_8" value="Falta de profissionais"> Falta de profissionais</label>
+          <label><input type="checkbox" name="q4_8" value="Demora no agendamento"> Demora no agendamento</label>
+          <label><input type="checkbox" name="q4_8" value="Falta de medicamentos"> Falta de medicamentos</label>
+          <label><input type="checkbox" name="q4_8" value="Não ser reconhecido como povo/comunidade tradicional no atendimento"> Não ser reconhecido como povo/comunidade tradicional no atendimento</label>
+          <label><input type="checkbox" name="q4_8" value="Discriminação ou tratamento desrespeitoso"> Discriminação ou tratamento desrespeitoso</label>
+          <label><input type="checkbox" name="q4_8" value="Barreira de língua"> Barreira de língua</label>
+          <label><input type="checkbox" name="q4_8" value="Horário de funcionamento incompatível"> Horário de funcionamento incompatível</label>
+          <label class="with-input"><input type="checkbox" name="q4_8" value="Outro" data-other-for="q4_8_other"> Outro
+            <input type="text" id="q4_8_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+        <p class="error-text" data-error-for="q4_8">Selecione ao menos uma opção.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A comunidade tem práticas tradicionais de cuidado em saúde?</legend>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="q4_9" value="Parteiras tradicionais"> Parteiras tradicionais</label>
+          <label><input type="checkbox" name="q4_9" value="Rezadeiras / benzedeiras"> Rezadeiras / benzedeiras</label>
+          <label><input type="checkbox" name="q4_9" value="Raizeiros(as) / conhecedores de plantas medicinais"> Raizeiros(as) / conhecedores de plantas medicinais</label>
+          <label><input type="checkbox" name="q4_9" value="Pajés / lideranças espirituais"> Pajés / lideranças espirituais</label>
+          <label><input type="checkbox" name="q4_9" value="Curandeiros(as)"> Curandeiros(as)</label>
+          <label class="with-input"><input type="checkbox" name="q4_9" value="Outras" data-other-for="q4_9_other"> Outras
+            <input type="text" id="q4_9_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+          <label><input type="checkbox" name="q4_9" value="Não"> Não</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Existe diálogo entre essas práticas e o serviço de saúde local?</legend>
+        <div class="radio-grid">
+          <label><input type="radio" name="q4_10" value="Sim, há reconhecimento e diálogo"> Sim, há reconhecimento e diálogo</label>
+          <label><input type="radio" name="q4_10" value="Há convivência, mas sem diálogo formal"> Há convivência, mas sem diálogo formal</label>
+          <label><input type="radio" name="q4_10" value="Não há diálogo"> Não há diálogo</label>
+          <label><input type="radio" name="q4_10" value="Há conflito ou desrespeito"> Há conflito ou desrespeito</label>
+          <label><input type="radio" name="q4_10" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Como a comunidade avalia o quesito raça/cor no atendimento em saúde?</legend>
+        <div class="radio-grid">
+          <label><input type="radio" name="q4_11" value="É sempre perguntado e registrado"> É sempre perguntado e registrado</label>
+          <label><input type="radio" name="q4_11" value="É perguntado às vezes"> É perguntado às vezes</label>
+          <label><input type="radio" name="q4_11" value="Nunca é perguntado"> Nunca é perguntado</label>
+          <label><input type="radio" name="q4_11" value="É preenchido sem perguntar à pessoa"> É preenchido sem perguntar à pessoa</label>
+          <label><input type="radio" name="q4_11" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 5 ============ -->
+    <fieldset id="s5">
+      <legend>5. Condições do território</legend>
+
+      <fieldset class="field">
+        <legend>Principal fonte de água *</legend>
+        <div class="checkbox-grid" data-required-checkbox="q5_1">
+          <label><input type="checkbox" name="q5_1" value="Rede pública de abastecimento"> Rede pública de abastecimento</label>
+          <label><input type="checkbox" name="q5_1" value="Poço artesiano"> Poço artesiano</label>
+          <label><input type="checkbox" name="q5_1" value="Cacimba"> Cacimba</label>
+          <label><input type="checkbox" name="q5_1" value="Cisterna"> Cisterna</label>
+          <label><input type="checkbox" name="q5_1" value="Rio, riacho ou açude"> Rio, riacho ou açude</label>
+          <label><input type="checkbox" name="q5_1" value="Carro-pipa"> Carro-pipa</label>
+          <label class="with-input"><input type="checkbox" name="q5_1" value="Outro" data-other-for="q5_1_other"> Outro
+            <input type="text" id="q5_1_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+        <p class="error-text" data-error-for="q5_1">Selecione ao menos uma opção.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A água passa por algum tratamento?</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q5_2" value="Sim"> Sim</label>
+          <label><input type="radio" name="q5_2" value="Não"> Não</label>
+          <label><input type="radio" name="q5_2" value="Às vezes"> Às vezes</label>
+          <label><input type="radio" name="q5_2" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Destino do esgoto *</legend>
+        <div class="radio-grid" data-required="true">
+          <label><input type="radio" name="q5_3" value="Rede coletora" required> Rede coletora</label>
+          <label><input type="radio" name="q5_3" value="Fossa séptica"> Fossa séptica</label>
+          <label><input type="radio" name="q5_3" value="Fossa rudimentar"> Fossa rudimentar</label>
+          <label><input type="radio" name="q5_3" value="Céu aberto"> Céu aberto</label>
+          <label><input type="radio" name="q5_3" value="Outro"> Outro</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Coleta de lixo *</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q5_4" value="Regular" required> Regular</label>
+          <label><input type="radio" name="q5_4" value="Irregular"> Irregular</label>
+          <label><input type="radio" name="q5_4" value="Não há"> Não há</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Energia elétrica *</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q5_5" value="Todas as casas" required> Todas as casas</label>
+          <label><input type="radio" name="q5_5" value="Parte das casas"> Parte das casas</label>
+          <label><input type="radio" name="q5_5" value="Não há"> Não há</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Sinal de telefone ou internet no território *</legend>
+        <div class="radio-grid" data-required="true">
+          <label><input type="radio" name="q5_6" value="Bom em toda a comunidade" required> Bom em toda a comunidade</label>
+          <label><input type="radio" name="q5_6" value="Apenas em alguns pontos"> Apenas em alguns pontos</label>
+          <label><input type="radio" name="q5_6" value="Muito fraco"> Muito fraco</label>
+          <label><input type="radio" name="q5_6" value="Não há sinal"> Não há sinal</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>A comunidade enfrenta algum conflito territorial ou ameaça?</legend>
+        <p class="help sensitive">Pergunta sensível — sinta-se à vontade para marcar "prefiro não informar".</p>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="q5_7" value="Disputa por terra"> Disputa por terra</label>
+          <label><input type="checkbox" name="q5_7" value="Mineração"> Mineração</label>
+          <label><input type="checkbox" name="q5_7" value="Empreendimento de energia"> Empreendimento de energia</label>
+          <label><input type="checkbox" name="q5_7" value="Agronegócio / uso de agrotóxicos"> Agronegócio / uso de agrotóxicos</label>
+          <label><input type="checkbox" name="q5_7" value="Especulação imobiliária"> Especulação imobiliária</label>
+          <label><input type="checkbox" name="q5_7" value="Grandes obras"> Grandes obras</label>
+          <label><input type="checkbox" name="q5_7" value="Ameaças a lideranças"> Ameaças a lideranças</label>
+          <label><input type="checkbox" name="q5_7" value="Nenhum"> Nenhum</label>
+          <label><input type="checkbox" name="q5_7" value="Prefiro não informar"> Prefiro não informar</label>
+          <label class="with-input"><input type="checkbox" name="q5_7" value="Outro" data-other-for="q5_7_other"> Outro
+            <input type="text" id="q5_7_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 6 ============ -->
+    <fieldset id="s6">
+      <legend>6. Organização e representação</legend>
+
+      <fieldset class="field">
+        <legend>A comunidade possui associação ou organização formal? *</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q6_1" value="Sim" required> Sim</label>
+          <label><input type="radio" name="q6_1" value="Não"> Não</label>
+          <label><input type="radio" name="q6_1" value="Em processo de criação"> Em processo de criação</label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="q6_2">Nome da associação</label>
+        <input id="q6_2" name="q6_2" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="q6_3">CNPJ (se houver)</label>
+        <input id="q6_3" name="q6_3" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="q6_4">A comunidade participa de algum movimento, fórum ou rede?</label>
+        <textarea id="q6_4" name="q6_4" rows="2"></textarea>
+        <p class="help">Ajuda: ex. CONAQ, APOINME, Fórum de Mulheres Negras, colônia de pescadores, conselho de saúde.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>A comunidade tem representação em conselho de saúde?</legend>
+        <div class="radio-grid">
+          <label><input type="radio" name="q6_5" value="Sim, conselho municipal"> Sim, conselho municipal</label>
+          <label><input type="radio" name="q6_5" value="Sim, conselho estadual"> Sim, conselho estadual</label>
+          <label><input type="radio" name="q6_5" value="Sim, ambos"> Sim, ambos</label>
+          <label><input type="radio" name="q6_5" value="Não"> Não</label>
+          <label><input type="radio" name="q6_5" value="Não sei informar"> Não sei informar</label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 7 ============ -->
+    <fieldset id="s7">
+      <legend>7. Contato</legend>
+
+      <div class="field">
+        <label for="q7_1">Nome completo de quem está preenchendo *</label>
+        <input id="q7_1" name="q7_1" type="text" required />
+      </div>
+
+      <fieldset class="field">
+        <legend>Função ou papel na comunidade *</legend>
+        <div class="radio-grid" data-required="true">
+          <label><input type="radio" name="q7_2" value="Liderança tradicional" required> Liderança tradicional</label>
+          <label><input type="radio" name="q7_2" value="Presidente/diretoria da associação"> Presidente/diretoria da associação</label>
+          <label><input type="radio" name="q7_2" value="Cacique / pajé"> Cacique / pajé</label>
+          <label><input type="radio" name="q7_2" value="Ialorixá / babalorixá"> Ialorixá / babalorixá</label>
+          <label><input type="radio" name="q7_2" value="Agente Comunitário de Saúde"> Agente Comunitário de Saúde</label>
+          <label><input type="radio" name="q7_2" value="Morador(a)"> Morador(a)</label>
+          <label><input type="radio" name="q7_2" value="Apoiador(a) externo"> Apoiador(a) externo</label>
+          <label class="with-input"><input type="radio" name="q7_2" value="Outro" data-other-for="q7_2_other"> Outro
+            <input type="text" id="q7_2_other" class="other-input" placeholder="Especificar" disabled />
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="q7_3">Telefone com WhatsApp *</label>
+        <input id="q7_3" name="q7_3" type="tel" required />
+      </div>
+
+      <div class="field">
+        <label for="q7_4">E-mail</label>
+        <input id="q7_4" name="q7_4" type="email" />
+      </div>
+
+      <div class="field">
+        <label>Existe outra liderança que possa ser contato de referência?</label>
+        <div class="inline-grid-3">
+          <input name="q7_5_nome" type="text" placeholder="Nome" />
+          <input name="q7_5_funcao" type="text" placeholder="Função" />
+          <input name="q7_5_telefone" type="text" placeholder="Telefone" />
+        </div>
+      </div>
+
+      <fieldset class="field">
+        <legend>Melhor horário para contato</legend>
+        <div class="radio-inline">
+          <label><input type="radio" name="q7_6" value="Manhã"> Manhã</label>
+          <label><input type="radio" name="q7_6" value="Tarde"> Tarde</label>
+          <label><input type="radio" name="q7_6" value="Noite"> Noite</label>
+          <label><input type="radio" name="q7_6" value="Qualquer horário"> Qualquer horário</label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <!-- ============ SEÇÃO 8 ============ -->
+    <fieldset id="s8">
+      <legend>8. Consentimento</legend>
+
+      <div class="field consent">
+        <label>
+          <input type="checkbox" name="q8_1" required />
+          Autorizo a CASPCT/SES-PE a entrar em contato com esta comunidade pelos dados informados. *
+        </label>
+      </div>
+
+      <div class="field consent">
+        <label>
+          <input type="checkbox" name="q8_2" />
+          Autorizo o recebimento, pelo WhatsApp informado, de mensagens sobre ações da coordenação, editais,
+          formações e políticas de saúde voltadas a povos e comunidades tradicionais.
+        </label>
+        <p class="help">Você pode cancelar a qualquer momento escrevendo SAIR no WhatsApp da coordenação.</p>
+      </div>
+
+      <div class="field consent">
+        <label>
+          <input type="checkbox" name="q8_3" required />
+          Estou ciente de que as informações serão usadas pela CASPCT/SES-PE para planejamento de ações de saúde,
+          e de que dados agregados (sem identificação de pessoas) podem ser usados em relatórios e diagnósticos
+          institucionais. *
+        </label>
+      </div>
+
+      <div class="field">
+        <label for="q8_4">Há alguma informação deste cadastro que a comunidade prefere que não seja divulgada?</label>
+        <textarea id="q8_4" name="q8_4" rows="2"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="q8_5">Algo mais que a comunidade queira registrar?</label>
+        <textarea id="q8_5" name="q8_5" rows="2"></textarea>
+      </div>
+    </fieldset>
+
+    <p class="required-note">* Campos obrigatórios</p>
+    <p class="error-text" id="form-error" role="alert"></p>
+
+    <button type="submit" class="submit-btn">Enviar cadastro</button>
+  </form>
+
+  <div id="success-panel" class="success-panel" hidden role="status">
+    <h2>Cadastro concluído. Obrigada!</h2>
+    <p>Sua comunidade passa a integrar o cadastro da CASPCT/SES-PE. Em breve você recebe uma confirmação pelo
+      WhatsApp com o número de protocolo.</p>
+    <p id="success-protocol" class="protocol"></p>
+    <p>Se autorizou o recebimento de informações, <strong>salve o número da coordenação na sua agenda</strong> —
+      sem isso, as mensagens do canal podem não chegar até você.</p>
+    <a class="submit-btn" href="index.html">Voltar ao canal PCT em Rede</a>
+  </div>
+
+  <p class="back-link"><a href="index.html">← Voltar ao PCT em Rede</a></p>
+</div>
+
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/form.js"></script>
+</body>
+</html>
