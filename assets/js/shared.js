@@ -8,10 +8,9 @@
    =========================================================== */
 
 const CASPCT = (() => {
-  // Preencher com a URL de implantação do Google Apps Script (termina em
-  // "/exec") depois de publicar o script — ver guia de configuração.
-  // Enquanto estiver vazio, os registros ficam só no localStorage.
-  const SHEET_WEBHOOK_URL = '';
+  // URL de implantação do Google Apps Script que grava os registros na
+  // Planilha Google da coordenação (ver guia de configuração).
+  const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx7GNClsMDoqrA7sZ62t91_YeCVjnMGkMAiVDUNCcoAXfux6lPvsrsdYt1h7vZWFe1Y/exec';
 
   const KEYS = {
     counters: 'caspct_protocol_counters',
