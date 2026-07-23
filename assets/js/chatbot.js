@@ -24,12 +24,41 @@
 
   const MENU_OPTIONS = [
     { key: '1', cmd: '/reuniao', title: 'Solicitar reunião', sub: 'com a coordenação', icon: '🗓️', color: COLORS.azul, run: flowReuniao },
-    { key: '2', cmd: '/pauta', title: 'Apresentar pauta ou demanda', sub: '', icon: '📣', color: COLORS.terracota, run: flowPauta },
+    { key: '2', cmd: '/pauta', title: 'Apresentar pauta ou demanda', sub: '', icon: '📣', color: COLORS.terracota, run: () => flowPauta() },
     { key: '3', cmd: '/cadastro', title: 'Cadastrar minha comunidade', sub: '', icon: '⌂', color: COLORS.verde, run: flowCadastro },
     { key: '4', cmd: '/informacoes', title: 'Receber informações da coordenação', sub: '', icon: 'ⓘ', color: COLORS.mostarda, run: flowInformacoes },
     { key: '5', cmd: '/andamento', title: 'Falar sobre uma ação já em andamento', sub: '', icon: '→', color: COLORS.azul, run: flowAndamento },
-    { key: '6', cmd: '/outro', title: 'Outro assunto', sub: '', icon: '💬', color: COLORS.cinza, run: flowOutro },
+    { key: '6', cmd: '/outro', title: 'Outro assunto', sub: '', icon: '💬', color: COLORS.cinza, run: () => flowOutro() },
   ];
+
+  // Entradas diretas das três frentes do Manual de Identidade (05. Submarcas).
+  // Cada uma pula o menu geral e cai direto no fluxo de captação mais
+  // adequado do canal CASPCT, mantendo a identidade visual da frente.
+  // Acesso via ?entrada=vozes | ?entrada=escuta | ?entrada=redes na URL
+  // (usado pelos QR Codes dos cards de divulgação).
+  const FRENTES = {
+    vozes: {
+      titulo: 'Vozes do Território',
+      desc: 'Fale diretamente com a Coordenação.',
+      assinatura: 'Sua voz chega.\nO território é ouvido.',
+      color: COLORS.verde,
+      run() { return flowOutro({ origem: this.titulo, color: this.color }); },
+    },
+    escuta: {
+      titulo: 'Escuta PCT',
+      desc: 'Tem uma demanda? Precisa denunciar? Está enfrentando uma situação urgente?',
+      assinatura: 'Escutar para agir.',
+      color: COLORS.terracota,
+      run() { return flowPauta({ origem: this.titulo, color: this.color }); },
+    },
+    redes: {
+      titulo: 'Entre Redes',
+      desc: 'Sua demanda precisa de articulação? Conectamos você às redes e políticas necessárias.',
+      assinatura: 'Articulando redes para cuidar dos territórios.',
+      color: COLORS.azul,
+      run() { return flowPauta({ origem: this.titulo, color: this.color }); },
+    },
+  };
 
   const URGENCY_WORDS = ['emergência', 'emergencia', 'infarto', 'socorro', 'passando mal', 'sangrando', 'convulsão', 'convulsao', 'engasg'];
 
@@ -216,6 +245,22 @@
       );
     }
 
+    // Entrada direta de uma das três frentes (?entrada=vozes|escuta|redes),
+    // usada pelos QR Codes dos cards de divulgação — pula o menu geral.
+    const entradaKey = new URLSearchParams(window.location.search).get('entrada');
+    const frente = entradaKey && FRENTES[entradaKey];
+    if (frente) {
+      setAccent(frente.color);
+      await botSay(
+        `${frente.titulo}\n${frente.desc}\n\n` +
+        `${frente.assinatura}\n\n` +
+        '⚠️ Este canal não atende emergências de saúde. Em caso de urgência, procure a UPA mais próxima ou ligue 192 (SAMU).\n\n' +
+        '(A qualquer momento, digite MENU para ver todas as opções do PCT em Rede.)'
+      );
+      await frente.run();
+      return;
+    }
+
     setAccent(COLORS.mostarda);
     await botSay(
       'Olá! Você chegou ao canal oficial da Coordenação de Atenção à Saúde de Povos e Comunidades Tradicionais (CASPCT) da Secretaria Estadual de Saúde de Pernambuco — PCT em Rede.\n\n' +
@@ -273,8 +318,8 @@
   }
 
   // ---------- 2. Pauta / demanda ----------
-  async function flowPauta() {
-    setAccent(COLORS.terracota);
+  async function flowPauta({ origem, color } = {}) {
+    setAccent(color || COLORS.terracota);
     await botSay(
       'Queremos registrar sua demanda com clareza. Responda em uma mensagem:\n\n' +
       '1. Seu nome e comunidade/organização\n' +
@@ -289,7 +334,7 @@
     pendingResolver = async (text) => {
       const nome = CASPCT.extractLine(text, 0, 'você');
       const protocolo = CASPCT.nextProtocol('PAU');
-      CASPCT.saveRecord({ protocolo, tipo: 'Pauta/Demanda', nome, detalhes: text, status: 'Pendente' });
+      CASPCT.saveRecord({ protocolo, tipo: 'Pauta/Demanda', origem: origem || 'Menu geral', nome, detalhes: text, status: 'Pendente' });
 
       await botSay(
         `Demanda registrada, ${nome}.\n\n` +
@@ -501,8 +546,8 @@
   }
 
   // ---------- 6. Outro assunto ----------
-  async function flowOutro() {
-    setAccent(COLORS.cinza);
+  async function flowOutro({ origem, color } = {}) {
+    setAccent(color || COLORS.cinza);
     await botSay(
       'Conte pra gente do que se trata, em uma mensagem. Se puder, informe também seu nome, comunidade/organização e município — assim conseguimos encaminhar melhor.\n\n' +
       'Se for algo que não é da nossa área, indicamos o caminho certo.'
@@ -511,7 +556,7 @@
     pendingResolver = async (text) => {
       const nome = CASPCT.extractLine(text, 0, 'você');
       const protocolo = CASPCT.nextProtocol('OUT');
-      CASPCT.saveRecord({ protocolo, tipo: 'Outro assunto', nome, detalhes: text, status: 'Pendente' });
+      CASPCT.saveRecord({ protocolo, tipo: 'Outro assunto', origem: origem || 'Menu geral', nome, detalhes: text, status: 'Pendente' });
       await botSay(
         `Recebido, ${nome}. Protocolo: ${protocolo}.\n\n` +
         'Nossa equipe vai analisar e, se for o caso, indicar o caminho certo.'
