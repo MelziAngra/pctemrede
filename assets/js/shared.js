@@ -10,7 +10,7 @@
 const CASPCT = (() => {
   // URL de implantação do Google Apps Script que grava os registros na
   // Planilha Google da coordenação (ver guia de configuração).
-  const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx7GNClsMDoqrA7sZ62t91_YeCVjnMGkMAiVDUNCcoAXfux6lPvsrsdYt1h7vZWFe1Y/exec';
+  const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzixsWCSsMnmk8FKcKopzCePvG3yyNeP13qt0vWmeSipxmmBDRv7zOhcdkOiYQWGXdf/exec';
 
   const KEYS = {
     counters: 'caspct_protocol_counters',
