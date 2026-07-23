@@ -14,12 +14,16 @@
   const FORM_LINK = 'form.html';
 
   // Cores por função (06 / 18 do Manual de Identidade)
+  // "alerta" é uma extensão além do manual original, para a Vigilância em
+  // Saúde e Clima (projeto SNTI/PCT) — sinaliza urgência, distinta das
+  // demais frentes.
   const COLORS = {
     verde: '#2F5D50',
     terracota: '#C56A3D',
     mostarda: '#D89B2D',
     azul: '#1F5EA8',
     cinza: '#6B6B6B',
+    alerta: '#A3324B',
   };
 
   const MENU_OPTIONS = [
@@ -29,6 +33,22 @@
     { key: '4', cmd: '/informacoes', title: 'Receber informações da coordenação', sub: '', icon: 'ⓘ', color: COLORS.mostarda, run: flowInformacoes },
     { key: '5', cmd: '/andamento', title: 'Falar sobre uma ação já em andamento', sub: '', icon: '→', color: COLORS.azul, run: flowAndamento },
     { key: '6', cmd: '/outro', title: 'Outro assunto', sub: '', icon: '💬', color: COLORS.cinza, run: () => flowOutro() },
+    { key: '7', cmd: '/vigilancia', title: 'Vigilância em Saúde e Clima', sub: 'agravos, água, enchentes, secas e emergências', icon: '🌊', color: COLORS.alerta, run: flowVigilancia },
+  ];
+
+  // Categorias da Vigilância em Saúde e Clima — espelha a tabela 3.3 do
+  // projeto SNTI/PCT (categorias, prazo de resposta e lista de operação
+  // institucional acionada por tipo de ocorrência).
+  const VIGILANCIA_CATEGORIAS = [
+    { key: 'agravo', label: 'Agravo de saúde / surto', icon: '🦠', sheet: 'vigilancia_saude', categoria: 'Agravo epidemiológico', prazo: 'Imediato (< 1h)', lista: 'GERES competente + COVISA municipal + COPCT/SES-PE' },
+    { key: 'enchente', label: 'Enchente ou alagamento', icon: '🌊', sheet: 'mudancas_climaticas', categoria: 'Enchente / Alagamento', prazo: 'Imediato (< 1h)', lista: 'Defesa Civil Estadual + GERES + COPCT + COAS/SES-PE' },
+    { key: 'seca', label: 'Seca ou falta d\'água', icon: '☀️', sheet: 'mudancas_climaticas', categoria: 'Seca / Escassez hídrica', prazo: 'Imediato (< 1h)', lista: 'Defesa Civil Estadual + GERES + COPCT + COAS/SES-PE' },
+    { key: 'clima_extremo', label: 'Outro evento climático extremo', icon: '🌡️', sheet: 'mudancas_climaticas', categoria: 'Evento climático extremo', prazo: 'Imediato (< 1h)', lista: 'Defesa Civil Estadual + GERES + COPCT + COAS/SES-PE' },
+    { key: 'ambiental', label: 'Contaminação / emergência ambiental', icon: '☠️', sheet: 'vigilancia_saude', categoria: 'Emergência ambiental', prazo: 'Imediato (< 1h)', lista: 'CPRH + Defesa Civil + COVISA + COPCT + Saúde do Trabalhador' },
+    { key: 'trabalhador', label: 'Saúde do trabalhador / acidente', icon: '👷', sheet: 'vigilancia_saude', categoria: 'Saúde do trabalhador', prazo: 'Até 2h', lista: 'CEREST Regional + GERES + Vigilância Sanitária + COPCT' },
+    { key: 'acesso', label: 'Falta de acesso a serviço de saúde', icon: '🚫', sheet: 'vigilancia_saude', categoria: 'Acesso a serviços', prazo: 'Até 4h', lista: 'GERES + Município + COPCT + DAB/SES-PE' },
+    { key: 'violencia', label: 'Violência / situação de vulnerabilidade', icon: '⚠️', sheet: 'vigilancia_saude', categoria: 'Violência', prazo: 'Até 2h', lista: 'COPCT + CRAS/CREAS municipal + Saúde Mental + GERES' },
+    { key: 'outro', label: 'Outro tipo de situação', icon: '💬', sheet: 'vigilancia_saude', categoria: 'Outro', prazo: 'A definir', lista: 'COPCT/SES-PE' },
   ];
 
   // Entradas diretas das três frentes do Manual de Identidade (05. Submarcas).
@@ -277,7 +297,8 @@
     await botSay(
       'Menu da CASPCT — escolha uma opção ou digite o número:\n\n' +
       '1 Reunião · 2 Pauta/demanda · 3 Cadastro de comunidade\n' +
-      '4 Receber informações · 5 Ação em andamento · 6 Outro assunto\n\n' +
+      '4 Receber informações · 5 Ação em andamento · 6 Outro assunto\n' +
+      '7 Vigilância em Saúde e Clima\n\n' +
       'A qualquer momento, digite MENU para voltar aqui.'
     );
     showQuickReplies(menuQuickReplyList());
@@ -512,12 +533,12 @@
     setAccent(COLORS.azul);
     await botSay(
       'Para consultar uma ação ou pedido em andamento, envie:\n\n' +
-      '• o número do protocolo (REU-…, PAU-… ou CAD-…), ou\n' +
+      '• o número do protocolo (REU-…, PAU-…, CAD-…, VIG-… ou CLI-…), ou\n' +
       '• seu nome + comunidade + assunto tratado'
     );
     enableFreeInput('Número de protocolo ou nome + comunidade...');
     pendingResolver = async (text) => {
-      const match = text.match(/(REU|PAU|CAD|OUT)-\d{4}-\d{3}/i);
+      const match = text.match(/(REU|PAU|CAD|OUT|VIG|CLI)-\d{4}-\d{3}/i);
       if (match) {
         const record = CASPCT.findRecord(match[0]);
         if (record) {
@@ -563,6 +584,116 @@
       );
       showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
     };
+  }
+
+  // ---------- 7. Vigilância em Saúde e Clima ----------
+  async function flowVigilancia() {
+    setAccent(COLORS.alerta);
+    await botSay(
+      'Vigilância em Saúde e Clima\n\n' +
+      'Use esta opção para notificar agravos de saúde, eventos climáticos (enchente, seca, evento extremo), contaminação ambiental, acidentes de trabalho, falta de acesso a serviços ou situações de violência no seu território.\n\n' +
+      '⚠️ Se há risco de vida imediato, ligue 192 (SAMU) ou 199 (Defesa Civil) agora — não espere retorno por aqui.\n\n' +
+      'Qual o tipo de situação?'
+    );
+    showQuickReplies(VIGILANCIA_CATEGORIAS.map(cat => ({
+      label: cat.label,
+      icon: cat.icon,
+      color: COLORS.alerta,
+      onClick: () => vigilanciaTerritorio(cat),
+    })));
+  }
+
+  async function vigilanciaTerritorio(cat) {
+    await botSay(
+      `Categoria: ${cat.icon} ${cat.label}\n\n` +
+      'Agora me conte sobre o território, no máximo de detalhe possível:\n\n' +
+      '1. Comunidade / território\n' +
+      '2. Município\n' +
+      '3. GERES (se souber — senão pode deixar em branco)\n' +
+      '4. Quantas pessoas ou famílias estão sendo afetadas, aproximadamente\n\n' +
+      'Responda tudo em uma mensagem.'
+    );
+    enableFreeInput('Comunidade, município, GERES, pessoas afetadas...');
+    pendingResolver = async (text) => vigilanciaDescricao(cat, { territorioText: text });
+  }
+
+  async function vigilanciaDescricao(cat, ctx) {
+    await botSay(
+      'Descreva a situação com o máximo de detalhes possível: o que está acontecendo, desde quando, e o que já foi observado ou tentado.'
+    );
+    enableFreeInput('Descreva a situação...');
+    pendingResolver = async (text) => vigilanciaGravidade(cat, { ...ctx, descricao: text });
+  }
+
+  async function vigilanciaGravidade(cat, ctx) {
+    await botSay('Qual a gravidade percebida da situação?');
+    showQuickReplies([
+      { label: 'Leve', color: COLORS.alerta, onClick: () => vigilanciaSuporte(cat, { ...ctx, gravidade: 'Leve' }) },
+      { label: 'Moderada', color: COLORS.alerta, onClick: () => vigilanciaSuporte(cat, { ...ctx, gravidade: 'Moderada' }) },
+      { label: 'Grave', color: COLORS.alerta, onClick: () => vigilanciaSuporte(cat, { ...ctx, gravidade: 'Grave' }) },
+      { label: 'Gravíssima — risco de vida', color: COLORS.alerta, onClick: () => vigilanciaSuporte(cat, { ...ctx, gravidade: 'Gravíssima (risco de vida)' }) },
+    ]);
+  }
+
+  async function vigilanciaSuporte(cat, ctx) {
+    await botSay(
+      'Qual o nível de suporte que a comunidade precisa com mais urgência agora?\n\n' +
+      '(ex.: água potável, resgate, atendimento médico, alimentos, abrigo temporário, orientação técnica, articulação institucional — pode listar mais de um)'
+    );
+    enableFreeInput('O que a comunidade precisa...');
+    pendingResolver = async (text) => vigilanciaContato(cat, { ...ctx, suporte: text });
+  }
+
+  async function vigilanciaContato(cat, ctx) {
+    await botSay('Por fim, seu nome e um telefone de contato (com WhatsApp), para retorno.');
+    enableFreeInput('Nome e telefone...');
+    pendingResolver = async (text) => finishVigilancia(cat, { ...ctx, contatoText: text });
+  }
+
+  async function finishVigilancia(cat, ctx) {
+    const nome = CASPCT.extractLine(ctx.contatoText, 0, 'você');
+    const telefone = CASPCT.extractLine(ctx.contatoText, 1, '');
+    const comunidade = CASPCT.extractLine(ctx.territorioText, 0, '');
+    const municipio = CASPCT.extractLine(ctx.territorioText, 1, '');
+    const geres = CASPCT.extractLine(ctx.territorioText, 2, '');
+    const afetados = CASPCT.extractLine(ctx.territorioText, 3, '');
+
+    const prefixo = cat.sheet === 'mudancas_climaticas' ? 'CLI' : 'VIG';
+    const protocolo = CASPCT.nextProtocol(prefixo);
+    const descricaoCompleta = ctx.descricao + (ctx.suporte ? `\n\nSuporte necessário: ${ctx.suporte}` : '');
+
+    CASPCT.saveRecord({
+      sheet: cat.sheet,
+      protocolo,
+      tipo: `Vigilância — ${cat.label}`,
+      origem: 'Menu geral',
+      categoria: cat.categoria,
+      tipoEvento: cat.categoria,
+      territorio: comunidade,
+      comunidade,
+      municipio,
+      geres,
+      afetados,
+      gravidade: ctx.gravidade,
+      descricao: descricaoCompleta,
+      detalhes: descricaoCompleta,
+      nome,
+      telefone,
+      prazo: cat.prazo,
+      listaOperacao: cat.lista,
+      status: 'Pendente',
+    });
+
+    await botSay(
+      `Notificação registrada. ✅\n\n` +
+      `Protocolo: ${protocolo}\n` +
+      `Categoria: ${cat.icon} ${cat.label}\n` +
+      `Gravidade percebida: ${ctx.gravidade}\n\n` +
+      `Segundo o desenho do projeto, essa categoria aciona: ${cat.lista}, com prazo de resposta de ${cat.prazo}.\n` +
+      '(Neste protótipo, o registro fica salvo na planilha de acompanhamento da CASPCT — o envio automático para cada órgão ainda não está implementado.)\n\n' +
+      '⚠️ Se há risco de vida imediato, ligue 192 (SAMU) ou 199 (Defesa Civil) agora — não espere retorno por aqui.'
+    );
+    showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
   }
 
   // ---------- blocos auxiliares ----------
