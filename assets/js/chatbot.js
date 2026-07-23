@@ -106,6 +106,11 @@
 
   const URGENCY_WORDS = ['emergência', 'emergencia', 'infarto', 'socorro', 'passando mal', 'sangrando', 'convulsão', 'convulsao', 'engasg'];
 
+  // Aviso padrão sobre como o retorno da coordenação pode chegar — anexado
+  // às confirmações de registro (o chatbot não consegue mandar mensagem
+  // sozinho para ninguém, então o retorno depende do contato informado).
+  const NOTA_CONTATO = '📞 O retorno da coordenação pode vir por telefone/WhatsApp ou e-mail — o que você preferir. Garanta que informou um contato de fácil acesso na sua mensagem, ou digite MENU e escolha a opção 5 (Ação em andamento) para consultar o protocolo depois.';
+
   // ---------- estado ----------
   let pendingResolver = null;   // função chamada com o próximo texto livre do usuário
   let pendingCollector = null;  // acumulador multi-etapas (usado no cadastro em 3 blocos)
@@ -353,7 +358,8 @@
         `Protocolo: ${protocolo}\n` +
         `Registrado em: ${CASPCT.nowStr()}\n\n` +
         'A coordenação vai analisar e retornar com proposta de data em até 10 dias úteis. Guarde este protocolo para acompanhamento.\n\n' +
-        'Enquanto isso: sua comunidade já está cadastrada conosco? Se ainda não, toque em "Cadastrar" — o cadastro ajuda a coordenação a planejar ações no seu território.'
+        'Enquanto isso: sua comunidade já está cadastrada conosco? Se ainda não, toque em "Cadastrar" — o cadastro ajuda a coordenação a planejar ações no seu território.\n\n' +
+        NOTA_CONTATO
       );
       showQuickReplies([
         { label: '⌂ Cadastrar minha comunidade', color: COLORS.verde, onClick: flowCadastro },
@@ -386,7 +392,8 @@
         `Protocolo: ${protocolo}\n` +
         `Registrado em: ${CASPCT.nowStr()}\n\n` +
         'A coordenação vai analisar e encaminhar internamente. Você receberá retorno sobre o andamento.\n\n' +
-        'ℹ️ Importante: a CASPCT atua na formulação e no acompanhamento de políticas. Algumas demandas precisam ser encaminhadas à GERES da sua região ou à secretaria municipal — quando for o caso, informamos o caminho e acompanhamos.'
+        'ℹ️ Importante: a CASPCT atua na formulação e no acompanhamento de políticas. Algumas demandas precisam ser encaminhadas à GERES da sua região ou à secretaria municipal — quando for o caso, informamos o caminho e acompanhamos.\n\n' +
+        NOTA_CONTATO
       );
       showQuickReplies([
         { label: '📍 Sobre encaminhamento à GERES', color: COLORS.azul, onClick: showGeres },
@@ -474,7 +481,8 @@
       `Cadastro recebido, ${comunidade}! ✅\n\n` +
       `Protocolo: ${protocolo}\n\n` +
       'Sua comunidade passa a integrar o cadastro da CASPCT. A partir de agora vocês podem receber, pelo canal de informações, notícias sobre ações da coordenação, editais, formações e políticas que afetam o território.\n\n' +
-      'Para parar de receber a qualquer momento, é só escrever SAIR.'
+      'Para parar de receber a qualquer momento, é só escrever SAIR.\n\n' +
+      NOTA_CONTATO
     );
     showQuickReplies([
       { label: 'ⓘ Ativar canal de informações', color: COLORS.mostarda, onClick: flowInformacoes },
@@ -564,18 +572,34 @@
     pendingResolver = async (text) => {
       const match = text.match(/(REU|PAU|CAD|OUT|VIG|CLI|ART)-\d{4}-\d{3}/i);
       if (match) {
-        const record = CASPCT.findRecord(match[0]);
-        if (record) {
+        const protocolo = match[0].toUpperCase();
+        // Consulta a planilha de verdade primeiro (funciona de qualquer
+        // aparelho); só cai para o registro local se não achar remotamente.
+        const remoto = await CASPCT.lookupProtocolo(protocolo);
+        if (remoto) {
           await botSay(
             `Encontramos seu registro:\n\n` +
-            `Protocolo: ${record.protocolo}\n` +
-            `Tipo: ${record.tipo}\n` +
-            `Registrado em: ${record.criadoEm}\n` +
-            `Status: ${record.status || 'Em análise'}\n\n` +
-            'Se precisar complementar informações, digite MENU e escolha "Outro assunto".'
+            `Protocolo: ${remoto.protocolo}\n` +
+            `Status: ${remoto.status || 'Em análise'}\n` +
+            (remoto.resposta
+              ? `\nResposta da equipe:\n${remoto.resposta}\n`
+              : '\nAinda sem retorno registrado por aqui — o contato pode vir por telefone/WhatsApp ou e-mail, conforme o que você informou.\n') +
+            '\nSe precisar complementar informações, digite MENU e escolha "Outro assunto".'
           );
         } else {
-          await botSay('Não encontramos esse protocolo nos registros deste protótipo. Em um atendimento real, nossa equipe consultaria a planilha de controle e retornaria por aqui.');
+          const record = CASPCT.findRecord(protocolo);
+          if (record) {
+            await botSay(
+              `Encontramos seu registro (salvo neste navegador):\n\n` +
+              `Protocolo: ${record.protocolo}\n` +
+              `Tipo: ${record.tipo}\n` +
+              `Registrado em: ${record.criadoEm}\n` +
+              `Status: ${record.status || 'Em análise'}\n\n` +
+              'Se precisar complementar informações, digite MENU e escolha "Outro assunto".'
+            );
+          } else {
+            await botSay('Não encontramos esse protocolo. Se você tiver certeza do número, nossa equipe pode consultar a planilha de controle e retornar por telefone/WhatsApp ou e-mail.');
+          }
         }
       } else {
         const found = CASPCT.searchRecordsByText(text);
@@ -604,7 +628,8 @@
       CASPCT.saveRecord({ protocolo, tipo: 'Outro assunto', origem: origem || 'Menu geral', nome, detalhes: text, status: 'Pendente' });
       await botSay(
         `Recebido, ${nome}. Protocolo: ${protocolo}.\n\n` +
-        'Nossa equipe vai analisar e, se for o caso, indicar o caminho certo.'
+        'Nossa equipe vai analisar e, se for o caso, indicar o caminho certo.\n\n' +
+        NOTA_CONTATO
       );
       showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
     };
@@ -715,6 +740,7 @@
       `Gravidade percebida: ${ctx.gravidade}\n\n` +
       `Segundo o desenho do projeto, essa categoria aciona: ${cat.lista}, com prazo de resposta de ${cat.prazo}.\n` +
       '(Neste protótipo, o registro fica salvo na planilha de acompanhamento da CASPCT — o envio automático para cada órgão ainda não está implementado.)\n\n' +
+      NOTA_CONTATO + '\n\n' +
       '⚠️ Se há risco de vida imediato, ligue 192 (SAMU) ou 199 (Defesa Civil) agora — não espere retorno por aqui.'
     );
     showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
@@ -764,7 +790,8 @@
       `Registrado. ✅\n\n` +
       `Protocolo: ${protocolo}\n\n` +
       `Sua demanda foi marcada para articulação com: ${cat.politica}.\n` +
-      'A coordenação vai analisar e conectar com a área responsável, mantendo o olhar de povos e comunidades tradicionais em todo o processo.'
+      'A coordenação vai analisar e conectar com a área responsável, mantendo o olhar de povos e comunidades tradicionais em todo o processo.\n\n' +
+      NOTA_CONTATO
     );
     showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
   }
