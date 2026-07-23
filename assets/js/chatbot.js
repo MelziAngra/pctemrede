@@ -34,6 +34,30 @@
     { key: '5', cmd: '/andamento', title: 'Falar sobre uma ação já em andamento', sub: '', icon: '→', color: COLORS.azul, run: flowAndamento },
     { key: '6', cmd: '/outro', title: 'Outro assunto', sub: '', icon: '💬', color: COLORS.cinza, run: () => flowOutro() },
     { key: '7', cmd: '/vigilancia', title: 'Vigilância em Saúde e Clima', sub: 'agravos, água, enchentes, secas e emergências', icon: '🌊', color: COLORS.alerta, run: flowVigilancia },
+    { key: '8', cmd: '/articulacao', title: 'Entre Redes: outras políticas e públicos', sub: 'idoso, criança, mulher, LGBTQIAPN+ e mais', icon: '🔗', color: COLORS.azul, run: flowArticulacao },
+  ];
+
+  // Entre Redes — articulação transversal da saúde de PCT com outras
+  // políticas e públicos específicos de saúde. Cada categoria mostra uma
+  // explicação de para que serve aquela articulação antes de capturar a
+  // demanda, e indica a política/coordenação real com a qual se conecta.
+  const ARTICULACAO_CATEGORIAS = [
+    { key: 'idoso', label: 'Saúde do Idoso', icon: '🧓', politica: 'Política Nacional de Saúde da Pessoa Idosa', explicacao: 'Conecta sua demanda com a Política Nacional de Saúde da Pessoa Idosa — cuidado, mobilidade, acesso a benefícios e valorização dos saberes das pessoas mais velhas do território.' },
+    { key: 'crianca', label: 'Saúde da Criança', icon: '👶', politica: 'Atenção Integral à Saúde da Criança', explicacao: 'Conecta com a Política Nacional de Atenção Integral à Saúde da Criança — puericultura, vacinação, desenvolvimento infantil e primeira infância no território.' },
+    { key: 'homem', label: 'Saúde do Homem', icon: '👨', politica: 'Atenção Integral à Saúde do Homem', explicacao: 'Conecta com a Política Nacional de Atenção Integral à Saúde do Homem — acesso e adesão dos homens do território aos serviços de saúde e prevenção.' },
+    { key: 'adolescente', label: 'Saúde do Adolescente', icon: '🧑', politica: 'Atenção à Saúde do Adolescente e do Jovem', explicacao: 'Conecta com a atenção à saúde de adolescentes e jovens — saúde sexual e reprodutiva, prevenção e protagonismo juvenil no território.' },
+    { key: 'mulher', label: 'Saúde da Mulher', icon: '👩', politica: 'Atenção Integral à Saúde da Mulher', explicacao: 'Conecta com a Política Nacional de Atenção Integral à Saúde da Mulher — pré-natal, parto, planejamento reprodutivo e cuidado, podendo se articular com parteiras tradicionais do território.' },
+    { key: 'lgbt', label: 'Saúde LGBTQIAPN+', icon: '🏳️‍🌈', politica: 'Saúde Integral de LGBTQIAPN+', explicacao: 'Conecta com a Política Nacional de Saúde Integral de LGBTQIAPN+ — acesso equânime e sem discriminação nos serviços de saúde.' },
+    { key: 'deficiencia', label: 'Pessoa com Deficiência', icon: '♿', politica: 'Saúde da Pessoa com Deficiência', explicacao: 'Conecta com a Política Nacional de Saúde da Pessoa com Deficiência — acessibilidade, reabilitação e cuidado continuado no território.' },
+    { key: 'tea', label: 'TEA (Transtorno do Espectro Autista)', icon: '🧩', politica: 'Rede de Atenção à Pessoa com TEA', explicacao: 'Conecta com a rede de atenção à pessoa com Transtorno do Espectro Autista (TEA) — diagnóstico, cuidado e apoio às famílias do território.' },
+    { key: 'nutricao', label: 'Nutrição e Segurança Alimentar', icon: '🌾', politica: 'Segurança Alimentar e Nutricional', explicacao: 'Conecta com a Segurança Alimentar e Nutricional — combate à insegurança alimentar e valorização da alimentação e produção tradicional do território.' },
+    { key: 'racial', label: 'Saúde da População Negra e Igualdade Racial', icon: '✊🏾', politica: 'Saúde Integral da População Negra', explicacao: 'Conecta com a Política Nacional de Saúde Integral da População Negra — enfrentamento ao racismo institucional e promoção da equidade racial no cuidado.' },
+    { key: 'rua', label: 'Pessoa em Situação de Rua', icon: '🏙️', politica: 'Política para a População em Situação de Rua', explicacao: 'Conecta com a Política Nacional para a População em Situação de Rua — atenção a pessoas do território que estejam ou tenham passado por situação de rua.' },
+    { key: 'migrantes', label: 'Migrantes (inclui tradução/intérprete)', icon: '🌍', politica: 'Atenção à Saúde de Migrantes e Refugiados', explicacao: 'Conecta com a rede de atenção a migrantes e refugiados — inclui apoio de tradução/intérprete quando a barreira de idioma dificultar o atendimento.' },
+    { key: 'parteiras', label: 'Cadastro de Parteiras e Benzedeiras', icon: '🤲', politica: 'Reconhecimento de Práticas Tradicionais de Cuidado', explicacao: 'Registra parteiras tradicionais, rezadeiras e benzedeiras do território junto à coordenação, para reconhecimento e articulação com o serviço de saúde local.', pergunta: 'Quem são as parteiras, rezadeiras ou benzedeiras da comunidade que você quer registrar? Inclua nome, o que fazem (parto, reza, uso de plantas etc.), comunidade/território, município e um contato (delas ou de quem está indicando).' },
+    { key: 'violencia_mulher', label: 'Violência contra a Mulher', icon: '🚨', politica: 'Rede de Enfrentamento à Violência contra a Mulher', explicacao: 'Conecta com a rede de enfrentamento à violência contra a mulher (Lei Maria da Penha) — CRAS/CREAS, Ligue 180 e a rede de proteção.' },
+    { key: 'ist', label: 'IST', icon: '✚', politica: 'Programa Estadual de IST/Aids', explicacao: 'Conecta com o Programa Estadual de IST/Aids — prevenção, testagem e tratamento de Infecções Sexualmente Transmissíveis.' },
+    { key: 'trabalhador_redes', label: 'Saúde do Trabalhador', icon: '👷', politica: 'CEREST — Saúde do Trabalhador', explicacao: 'Conecta com o CEREST (Centro de Referência em Saúde do Trabalhador) — acidentes e adoecimento relacionados ao trabalho no território.' },
   ];
 
   // Categorias da Vigilância em Saúde e Clima — espelha a tabela 3.3 do
@@ -298,7 +322,7 @@
       'Menu da CASPCT — escolha uma opção ou digite o número:\n\n' +
       '1 Reunião · 2 Pauta/demanda · 3 Cadastro de comunidade\n' +
       '4 Receber informações · 5 Ação em andamento · 6 Outro assunto\n' +
-      '7 Vigilância em Saúde e Clima\n\n' +
+      '7 Vigilância em Saúde e Clima · 8 Entre Redes (outras políticas)\n\n' +
       'A qualquer momento, digite MENU para voltar aqui.'
     );
     showQuickReplies(menuQuickReplyList());
@@ -533,12 +557,12 @@
     setAccent(COLORS.azul);
     await botSay(
       'Para consultar uma ação ou pedido em andamento, envie:\n\n' +
-      '• o número do protocolo (REU-…, PAU-…, CAD-…, VIG-… ou CLI-…), ou\n' +
+      '• o número do protocolo (REU-…, PAU-…, CAD-…, VIG-…, CLI-… ou ART-…), ou\n' +
       '• seu nome + comunidade + assunto tratado'
     );
     enableFreeInput('Número de protocolo ou nome + comunidade...');
     pendingResolver = async (text) => {
-      const match = text.match(/(REU|PAU|CAD|OUT|VIG|CLI)-\d{4}-\d{3}/i);
+      const match = text.match(/(REU|PAU|CAD|OUT|VIG|CLI|ART)-\d{4}-\d{3}/i);
       if (match) {
         const record = CASPCT.findRecord(match[0]);
         if (record) {
@@ -692,6 +716,55 @@
       `Segundo o desenho do projeto, essa categoria aciona: ${cat.lista}, com prazo de resposta de ${cat.prazo}.\n` +
       '(Neste protótipo, o registro fica salvo na planilha de acompanhamento da CASPCT — o envio automático para cada órgão ainda não está implementado.)\n\n' +
       '⚠️ Se há risco de vida imediato, ligue 192 (SAMU) ou 199 (Defesa Civil) agora — não espere retorno por aqui.'
+    );
+    showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
+  }
+
+  // ---------- 8. Entre Redes: articulação com outras políticas e públicos ----------
+  async function flowArticulacao() {
+    setAccent(COLORS.azul);
+    await botSay(
+      'Entre Redes — Articulação com outras políticas e públicos\n\n' +
+      'A saúde de povos e comunidades tradicionais atravessa vários públicos e políticas — pessoas idosas, crianças, mulheres, população negra, LGBTQIAPN+, pessoas com deficiência e outras. Esta opção existe para você indicar quando sua demanda toca especificamente uma dessas políticas, para a coordenação articular com a área certa sem perder o olhar do território.\n\n' +
+      'Escolha a política ou público relacionado à sua demanda:'
+    );
+    showQuickReplies(ARTICULACAO_CATEGORIAS.map(cat => ({
+      label: cat.label,
+      icon: cat.icon,
+      color: COLORS.azul,
+      onClick: () => articulacaoExplicar(cat),
+    })));
+  }
+
+  async function articulacaoExplicar(cat) {
+    await botSay(`${cat.icon} ${cat.label}\n\n${cat.explicacao}`);
+    await botSay(
+      cat.pergunta ||
+      'Conte sua demanda ou situação, incluindo comunidade/território, município e um contato (nome e telefone).'
+    );
+    enableFreeInput('Descreva a demanda...');
+    pendingResolver = async (text) => finishArticulacao(cat, text);
+  }
+
+  async function finishArticulacao(cat, text) {
+    const nome = CASPCT.extractLine(text, 0, 'você');
+    const protocolo = CASPCT.nextProtocol('ART');
+    CASPCT.saveRecord({
+      sheet: 'articulacao',
+      protocolo,
+      tipo: `Entre Redes — ${cat.label}`,
+      origem: 'Menu geral',
+      categoria: cat.label,
+      politica: cat.politica,
+      nome,
+      detalhes: text,
+      status: 'Pendente',
+    });
+    await botSay(
+      `Registrado. ✅\n\n` +
+      `Protocolo: ${protocolo}\n\n` +
+      `Sua demanda foi marcada para articulação com: ${cat.politica}.\n` +
+      'A coordenação vai analisar e conectar com a área responsável, mantendo o olhar de povos e comunidades tradicionais em todo o processo.'
     );
     showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
   }
