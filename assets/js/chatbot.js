@@ -491,34 +491,76 @@
   }
 
   // ---------- 4. Informações / opt-in ----------
+  // Fluxo estruturado por etapas: a pessoa escolhe explicitamente o canal
+  // de contato (WhatsApp e/ou e-mail) em vez de embutir isso num texto
+  // livre — pedido direto de usuárias em teste, que não sabiam como
+  // informar o contato preferido.
   async function flowInformacoes() {
     setAccent(COLORS.mostarda);
     await botSay(
-      'Para receber informações da coordenação de forma sistemática, precisamos de três coisas:\n\n' +
-      '1. Seu nome\n' +
-      '2. Comunidade/organização e município\n' +
-      '3. Confirmação: você autoriza a CASPCT/SES-PE a enviar informações sobre políticas de saúde, ações e editais para este número?\n\n' +
-      'Responda AUTORIZO junto com os dados acima.\n\n' +
+      'Para receber informações da coordenação de forma sistemática (ações no território, editais, formações e mudanças em políticas), vamos precisar de alguns dados — leva menos de 1 minuto.\n\n' +
       'Você pode cancelar quando quiser, escrevendo SAIR.\n\n' +
-      '💡 Salve nosso número na sua agenda — sem isso, as mensagens do canal podem não chegar até você.'
+      'Para começar, qual é o seu nome?'
     );
-    enableFreeInput('Nome, comunidade/município e AUTORIZO...');
-    pendingResolver = handleInformacoesReply;
+    enableFreeInput('Seu nome...');
+    pendingResolver = async (text) => informacoesComunidade({ nome: CASPCT.extractFirstLine(text) });
   }
 
-  async function handleInformacoesReply(text) {
-    if (!/autorizo/i.test(text)) {
-      await botSay('Para concluir a inscrição, inclua a palavra AUTORIZO junto com seu nome e comunidade/município. Se preferir não se inscrever agora, digite MENU.');
-      enableFreeInput('Nome, comunidade/município e AUTORIZO...');
-      pendingResolver = handleInformacoesReply;
-      return;
-    }
-    const nome = CASPCT.extractLine(text, 0, 'você');
-    const comunidade = CASPCT.extractLine(text, 1, '');
-    const subscriber = CASPCT.setSubscriber({ nome, comunidade, optIn: true, optInDate: CASPCT.nowStr() });
+  async function informacoesComunidade(ctx) {
+    await botSay('Comunidade/organização e município?');
+    enableFreeInput('Comunidade/organização e município...');
+    pendingResolver = async (text) => informacoesCanal({ ...ctx, comunidade: text });
+  }
+
+  async function informacoesCanal(ctx) {
+    await botSay('Como prefere receber as informações da coordenação?');
+    showQuickReplies([
+      { label: '📱 WhatsApp', color: COLORS.mostarda, onClick: () => informacoesContato({ ...ctx, canal: 'WhatsApp' }) },
+      { label: '📧 E-mail', color: COLORS.mostarda, onClick: () => informacoesContato({ ...ctx, canal: 'E-mail' }) },
+      { label: '📱📧 Os dois', color: COLORS.mostarda, onClick: () => informacoesContato({ ...ctx, canal: 'WhatsApp e e-mail' }) },
+    ]);
+  }
+
+  async function informacoesContato(ctx) {
+    const pedido = ctx.canal === 'WhatsApp'
+      ? 'Qual o número de WhatsApp (com DDD)?'
+      : ctx.canal === 'E-mail'
+        ? 'Qual o seu e-mail?'
+        : 'Envie o número de WhatsApp (com DDD) e o e-mail, um em cada linha.';
+    await botSay(pedido);
+    enableFreeInput(ctx.canal === 'E-mail' ? 'seu@email.com' : 'Telefone e/ou e-mail...');
+    pendingResolver = async (text) => informacoesConsentimento({ ...ctx, contato: text.trim() });
+  }
+
+  async function informacoesConsentimento(ctx) {
+    await botSay(
+      `Confirma os dados abaixo?\n\n` +
+      `Nome: ${ctx.nome}\n` +
+      `Comunidade/município: ${ctx.comunidade}\n` +
+      `Canal: ${ctx.canal}\n` +
+      `Contato: ${ctx.contato}\n\n` +
+      'Ao confirmar, você autoriza a CASPCT/SES-PE a enviar informações sobre políticas de saúde, ações e editais para este contato. Você pode cancelar quando quiser, escrevendo SAIR.\n\n' +
+      '💡 Se escolheu WhatsApp, salve nosso número na sua agenda — sem isso, as mensagens do canal podem não chegar até você.'
+    );
+    showQuickReplies([
+      { label: '✅ Autorizo', color: COLORS.mostarda, onClick: () => finishInformacoes(ctx) },
+      { label: '↩ Cancelar e voltar ao menu', color: COLORS.cinza, onClick: showMainMenu },
+    ]);
+  }
+
+  async function finishInformacoes(ctx) {
+    const subscriber = CASPCT.setSubscriber({
+      nome: ctx.nome,
+      comunidade: ctx.comunidade,
+      canal: ctx.canal,
+      contato: ctx.contato,
+      optIn: true,
+      optInDate: CASPCT.nowStr(),
+    });
 
     await botSay(
       `Pronto, ${subscriber.nome}! Você está inscrito(a) no canal de informações da CASPCT. ✅\n\n` +
+      `Canal: ${subscriber.canal} (${subscriber.contato})\n` +
       `Registrado em: ${subscriber.optInDate}\n\n` +
       'Você vai receber:\n' +
       '• ações da coordenação no seu território e na sua região\n' +
@@ -842,6 +884,15 @@
   });
   document.getElementById('contrast-toggle').addEventListener('click', () => {
     document.body.classList.toggle('high-contrast');
+  });
+
+  // Botão fixo no topo — sempre visível, não depende de rolar o chat ou
+  // lembrar de digitar MENU (pedido de usuárias em teste).
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    pendingResolver = null;
+    pendingCollector = null;
+    disableFreeInput();
+    showMainMenu();
   });
 
   // ---------- início ----------
