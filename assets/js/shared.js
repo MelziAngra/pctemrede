@@ -100,9 +100,27 @@ const CASPCT = (() => {
     return line.replace(/^\d+[\.\)]\s*/, '').trim().slice(0, 120) || fallback;
   }
 
+  // Consulta o protocolo direto na Planilha Google (via doGet do Apps
+  // Script) — funciona de qualquer aparelho, diferente do findRecord()
+  // acima que só enxerga o que foi salvo neste navegador. Devolve
+  // {protocolo, status, resposta} se achar, ou null se não achar / não
+  // conseguir consultar (webhook não configurado, offline etc.).
+  async function lookupProtocolo(protocolo) {
+    if (!SHEET_WEBHOOK_URL || !protocolo) return null;
+    try {
+      const url = `${SHEET_WEBHOOK_URL}?protocolo=${encodeURIComponent(protocolo.trim())}`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data && data.ok ? data : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
   return {
     nowStr, isBusinessHours, nextProtocol,
-    saveRecord, findRecord, searchRecordsByText,
+    saveRecord, findRecord, searchRecordsByText, lookupProtocolo,
     getSubscriber, setSubscriber,
     extractFirstLine, extractLine,
   };
