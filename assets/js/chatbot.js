@@ -111,6 +111,16 @@
   // sozinho para ninguém, então o retorno depende do contato informado).
   const NOTA_CONTATO = '📞 O retorno é individual: alguém da equipe técnica vai te contatar por telefone/WhatsApp (do número da pessoa técnica, não de um número fixo da coordenação) ou por e-mail, conforme o contato que você deixou. Garanta que informou um contato de fácil acesso na sua mensagem, ou digite MENU e escolha a opção 5 (Ação em andamento) para consultar o protocolo depois.';
 
+  // Passo padrão de captura de contato — usado por todos os fluxos que
+  // geram protocolo, para garantir que sempre exista um telefone/e-mail
+  // guardado (é por esse contato que a equipe dá o retorno; sem ele
+  // ninguém consegue ser avisado).
+  async function pedirContato(onDone) {
+    await botSay('Por último: um telefone (WhatsApp) ou e-mail para a coordenação te dar retorno. É por esse contato que a resposta chega até você — sem ele, ninguém consegue te avisar.');
+    enableFreeInput('Telefone/WhatsApp ou e-mail...');
+    pendingResolver = async (text) => onDone(text.trim());
+  }
+
   // ---------- estado ----------
   let pendingResolver = null;   // função chamada com o próximo texto livre do usuário
   let pendingCollector = null;  // acumulador multi-etapas (usado no cadastro em 3 blocos)
@@ -350,21 +360,23 @@
     pendingResolver = async (text) => {
       const nome = CASPCT.extractLine(text, 0, 'você');
       const comunidade = CASPCT.extractLine(text, 1, '');
-      const protocolo = CASPCT.nextProtocol('REU');
-      CASPCT.saveRecord({ protocolo, tipo: 'Reunião', nome, comunidade, detalhes: text, status: 'Pendente' });
+      await pedirContato(async (telefone) => {
+        const protocolo = CASPCT.nextProtocol('REU');
+        CASPCT.saveRecord({ protocolo, tipo: 'Reunião', nome, comunidade, telefone, detalhes: text, status: 'Pendente' });
 
-      await botSay(
-        `Recebemos seu pedido de reunião, ${nome}.\n\n` +
-        `Protocolo: ${protocolo}\n` +
-        `Registrado em: ${CASPCT.nowStr()}\n\n` +
-        'A coordenação vai analisar e retornar com proposta de data em até 10 dias úteis. Guarde este protocolo para acompanhamento.\n\n' +
-        'Enquanto isso: sua comunidade já está cadastrada conosco? Se ainda não, toque em "Cadastrar" — o cadastro ajuda a coordenação a planejar ações no seu território.\n\n' +
-        NOTA_CONTATO
-      );
-      showQuickReplies([
-        { label: '⌂ Cadastrar minha comunidade', color: COLORS.verde, onClick: flowCadastro },
-        { label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu },
-      ]);
+        await botSay(
+          `Recebemos seu pedido de reunião, ${nome}.\n\n` +
+          `Protocolo: ${protocolo}\n` +
+          `Registrado em: ${CASPCT.nowStr()}\n\n` +
+          'A coordenação vai analisar e retornar com proposta de data em até 10 dias úteis. Guarde este protocolo para acompanhamento.\n\n' +
+          'Enquanto isso: sua comunidade já está cadastrada conosco? Se ainda não, toque em "Cadastrar" — o cadastro ajuda a coordenação a planejar ações no seu território.\n\n' +
+          NOTA_CONTATO
+        );
+        showQuickReplies([
+          { label: '⌂ Cadastrar minha comunidade', color: COLORS.verde, onClick: flowCadastro },
+          { label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu },
+        ]);
+      });
     };
   }
 
@@ -384,21 +396,23 @@
     enableFreeInput('Descreva a demanda...');
     pendingResolver = async (text) => {
       const nome = CASPCT.extractLine(text, 0, 'você');
-      const protocolo = CASPCT.nextProtocol('PAU');
-      CASPCT.saveRecord({ protocolo, tipo: 'Pauta/Demanda', origem: origem || 'Menu geral', nome, detalhes: text, status: 'Pendente' });
+      await pedirContato(async (telefone) => {
+        const protocolo = CASPCT.nextProtocol('PAU');
+        CASPCT.saveRecord({ protocolo, tipo: 'Pauta/Demanda', origem: origem || 'Menu geral', nome, telefone, detalhes: text, status: 'Pendente' });
 
-      await botSay(
-        `Demanda registrada, ${nome}.\n\n` +
-        `Protocolo: ${protocolo}\n` +
-        `Registrado em: ${CASPCT.nowStr()}\n\n` +
-        'A coordenação vai analisar e encaminhar internamente. Você receberá retorno sobre o andamento.\n\n' +
-        'ℹ️ Importante: a CASPCT atua na formulação e no acompanhamento de políticas. Algumas demandas precisam ser encaminhadas à GERES da sua região ou à secretaria municipal — quando for o caso, informamos o caminho e acompanhamos.\n\n' +
-        NOTA_CONTATO
-      );
-      showQuickReplies([
-        { label: '📍 Sobre encaminhamento à GERES', color: COLORS.azul, onClick: showGeres },
-        { label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu },
-      ]);
+        await botSay(
+          `Demanda registrada, ${nome}.\n\n` +
+          `Protocolo: ${protocolo}\n` +
+          `Registrado em: ${CASPCT.nowStr()}\n\n` +
+          'A coordenação vai analisar e encaminhar internamente. Você receberá retorno sobre o andamento.\n\n' +
+          'ℹ️ Importante: a CASPCT atua na formulação e no acompanhamento de políticas. Algumas demandas precisam ser encaminhadas à GERES da sua região ou à secretaria municipal — quando for o caso, informamos o caminho e acompanhamos.\n\n' +
+          NOTA_CONTATO
+        );
+        showQuickReplies([
+          { label: '📍 Sobre encaminhamento à GERES', color: COLORS.azul, onClick: showGeres },
+          { label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu },
+        ]);
+      });
     };
   }
 
@@ -666,14 +680,16 @@
     enableFreeInput('Descreva o assunto...');
     pendingResolver = async (text) => {
       const nome = CASPCT.extractLine(text, 0, 'você');
-      const protocolo = CASPCT.nextProtocol('OUT');
-      CASPCT.saveRecord({ protocolo, tipo: 'Outro assunto', origem: origem || 'Menu geral', nome, detalhes: text, status: 'Pendente' });
-      await botSay(
-        `Recebido, ${nome}. Protocolo: ${protocolo}.\n\n` +
-        'Nossa equipe vai analisar e, se for o caso, indicar o caminho certo.\n\n' +
-        NOTA_CONTATO
-      );
-      showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
+      await pedirContato(async (telefone) => {
+        const protocolo = CASPCT.nextProtocol('OUT');
+        CASPCT.saveRecord({ protocolo, tipo: 'Outro assunto', origem: origem || 'Menu geral', nome, telefone, detalhes: text, status: 'Pendente' });
+        await botSay(
+          `Recebido, ${nome}. Protocolo: ${protocolo}.\n\n` +
+          'Nossa equipe vai analisar e, se for o caso, indicar o caminho certo.\n\n' +
+          NOTA_CONTATO
+        );
+        showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
+      });
     };
   }
 
@@ -808,14 +824,16 @@
     await botSay(`${cat.icon} ${cat.label}\n\n${cat.explicacao}`);
     await botSay(
       cat.pergunta ||
-      'Conte sua demanda ou situação, incluindo comunidade/território, município e um contato (nome e telefone).'
+      'Conte sua demanda ou situação, incluindo comunidade/território e município.'
     );
     enableFreeInput('Descreva a demanda...');
-    pendingResolver = async (text) => finishArticulacao(cat, text);
+    pendingResolver = async (text) => {
+      const nome = CASPCT.extractLine(text, 0, 'você');
+      await pedirContato((telefone) => finishArticulacao(cat, text, nome, telefone));
+    };
   }
 
-  async function finishArticulacao(cat, text) {
-    const nome = CASPCT.extractLine(text, 0, 'você');
+  async function finishArticulacao(cat, text, nome, telefone) {
     const protocolo = CASPCT.nextProtocol('ART');
     CASPCT.saveRecord({
       sheet: 'articulacao',
@@ -825,6 +843,7 @@
       categoria: cat.label,
       politica: cat.politica,
       nome,
+      telefone,
       detalhes: text,
       status: 'Pendente',
     });
