@@ -1,15 +1,35 @@
 /* ===========================================================
    PCT em Rede / CASPCT-SES-PE — utilidades compartilhadas
-   Simulação local (localStorage) de protocolos, registros e
-   inscrição no canal de informações. Sem backend real.
+   Protocolos, registros e inscrição no canal de informações.
+   Guarda uma cópia local (localStorage, por navegador) e, se
+   configurado, envia cada registro para uma Planilha Google via
+   Google Apps Script — é assim que a equipe da coordenação
+   consegue ver os registros de qualquer navegador, num só lugar.
    =========================================================== */
 
 const CASPCT = (() => {
+  // Preencher com a URL de implantação do Google Apps Script (termina em
+  // "/exec") depois de publicar o script — ver guia de configuração.
+  // Enquanto estiver vazio, os registros ficam só no localStorage.
+  const SHEET_WEBHOOK_URL = '';
+
   const KEYS = {
     counters: 'caspct_protocol_counters',
     records: 'caspct_records',
     subscriber: 'caspct_subscriber',
   };
+
+  function sendToSheet(payload) {
+    if (!SHEET_WEBHOOK_URL) return;
+    // no-cors: não conseguimos ler a resposta, mas o Apps Script recebe e
+    // grava a linha normalmente. Falha silenciosa para nunca travar o chat.
+    fetch(SHEET_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+  }
 
   function nowStr() {
     return new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
@@ -32,9 +52,11 @@ const CASPCT = (() => {
   }
 
   function saveRecord(record) {
+    const withDate = { ...record, criadoEm: nowStr() };
     const list = JSON.parse(localStorage.getItem(KEYS.records) || '[]');
-    list.push({ ...record, criadoEm: nowStr() });
+    list.push(withDate);
     localStorage.setItem(KEYS.records, JSON.stringify(list));
+    sendToSheet({ sheet: 'registros', ...withDate });
     return record;
   }
 
@@ -59,6 +81,7 @@ const CASPCT = (() => {
 
   function setSubscriber(obj) {
     localStorage.setItem(KEYS.subscriber, JSON.stringify(obj));
+    sendToSheet({ sheet: 'inscritos', ...obj });
     return obj;
   }
 
