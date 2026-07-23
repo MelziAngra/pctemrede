@@ -109,7 +109,7 @@
   // Aviso padrão sobre como o retorno da coordenação pode chegar — anexado
   // às confirmações de registro (o chatbot não consegue mandar mensagem
   // sozinho para ninguém, então o retorno depende do contato informado).
-  const NOTA_CONTATO = '📞 O retorno da coordenação pode vir por telefone/WhatsApp ou e-mail — o que você preferir. Garanta que informou um contato de fácil acesso na sua mensagem, ou digite MENU e escolha a opção 5 (Ação em andamento) para consultar o protocolo depois.';
+  const NOTA_CONTATO = '📞 O retorno é individual: alguém da equipe técnica vai te contatar por telefone/WhatsApp (do número da pessoa técnica, não de um número fixo da coordenação) ou por e-mail, conforme o contato que você deixou. Garanta que informou um contato de fácil acesso na sua mensagem, ou digite MENU e escolha a opção 5 (Ação em andamento) para consultar o protocolo depois.';
 
   // ---------- estado ----------
   let pendingResolver = null;   // função chamada com o próximo texto livre do usuário
@@ -540,7 +540,7 @@
       `Canal: ${ctx.canal}\n` +
       `Contato: ${ctx.contato}\n\n` +
       'Ao confirmar, você autoriza a CASPCT/SES-PE a enviar informações sobre políticas de saúde, ações e editais para este contato. Você pode cancelar quando quiser, escrevendo SAIR.\n\n' +
-      '💡 Se escolheu WhatsApp, salve nosso número na sua agenda — sem isso, as mensagens do canal podem não chegar até você.'
+      '💡 A coordenação não tem um número fixo de WhatsApp — se você escolheu esse canal, o contato vem do número pessoal de alguém da equipe técnica, então pode chegar de um número que você não conhece ainda.'
     );
     showQuickReplies([
       { label: '✅ Autorizo', color: COLORS.mostarda, onClick: () => finishInformacoes(ctx) },
@@ -567,7 +567,7 @@
       '• editais, chamadas públicas e oportunidades\n' +
       '• formações, oficinas e encontros\n' +
       '• mudanças em políticas de saúde que afetam povos e comunidades tradicionais\n\n' +
-      'Enviamos, em média, duas mensagens por mês. Para sair, escreva SAIR.'
+      'O contato é feito individualmente por alguém da equipe técnica, pelo canal que você escolheu — não é uma lista de transmissão automática. Para sair, escreva SAIR.'
     );
     showQuickReplies([{ label: '↩ Voltar ao menu', color: COLORS.cinza, onClick: showMainMenu }]);
   }
